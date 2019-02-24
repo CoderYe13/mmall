@@ -9,6 +9,8 @@ import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JsonUtil;
 import com.mmall.util.RedisPoolUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/user/")
+@Slf4j
 public class UserController {
     @Autowired
     private IUserService iUserService;
@@ -30,7 +33,7 @@ public class UserController {
      */
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody//将返回的序列化对象转化成json
-    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ServerResponse<User> login(String username, String password, HttpSession session,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         //service->mybatis->dao
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
@@ -46,8 +49,11 @@ public class UserController {
      */
     @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> logout(HttpSession session) {
-        session.removeAttribute(Const.CURRENT_USER);
+    public ServerResponse<String> logout(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse) {
+        //session.removeAttribute(Const.CURRENT_USER);
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        CookieUtil.delLoginToken(httpServletRequest,httpServletResponse);
+        RedisPoolUtil.del(loginToken);
         return ServerResponse.createBySuccess();
     }
 
@@ -63,8 +69,8 @@ public class UserController {
     /*
      *校验用户名和email
      */
-    @RequestMapping(value = "check_valid.do", method = RequestMethod.POST)
     @ResponseBody
+    @RequestMapping(value = "check_valid.do", method = RequestMethod.POST)
     public ServerResponse<String> checkValid(String str, String type) {
         return iUserService.checkValid(str, type);
     }
@@ -74,8 +80,16 @@ public class UserController {
      */
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> getUserInfo(HttpSession session) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+    public ServerResponse<User> getUserInfo(HttpServletRequest httpServletRequest) {
+       // User user = (User) session.getAttribute(Const.CURRENT_USER);
+
+        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        if(StringUtils.isEmpty(loginToken)){
+            return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
+        }
+        String userJsonStr=RedisPoolUtil.get(loginToken);
+        User user=JsonUtil.string2Obj(userJsonStr,User.class);
+        log.info("user:{}",user);
         if (user != null) {
             return ServerResponse.createBySuccess(user);
         }

@@ -83,12 +83,4 @@ public class RedisPoolUtil {
         return result;
     }
 
-    public static void main(String[] args){
-        Jedis jedis=RedisPool.getJedis();
-        RedisPoolUtil.set("ketTest","hello");
-        String result=RedisPoolUtil.get("hello");
-        RedisPoolUtil.setEx("keyex","keyex",60*10);
-        RedisPoolUtil.expire("ketTest",60*20);
-        RedisPoolUtil.del("keyTest");
-    }
 }

@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class CookieUtil {
-    private final static String COOKIE_DOMAIN=".happymmall.com";
+    //private final static String COOKIE_DOMAIN=".happymmall.com";
     private final static String COOKIE_NAME="mmall_login_token";
 //登陆时写入Cookie
     public static void writeLoginToken(HttpServletResponse response,String token){
         Cookie ck=new Cookie(COOKIE_NAME,token);
-        ck.setDomain(COOKIE_DOMAIN);
+       // ck.setDomain(COOKIE_DOMAIN);
         ck.setPath("/");//代表设置在根目录
         ck.setHttpOnly(true);
         //单位是秒
@@ -42,7 +42,7 @@ public class CookieUtil {
         if(cks!=null){
             for(Cookie ck:cks){
                 if(StringUtils.equals(ck.getName(),COOKIE_NAME)){
-                    ck.setDomain(COOKIE_DOMAIN);
+                   // ck.setDomain(COOKIE_DOMAIN);
                     ck.setPath("/");
                     ck.setMaxAge(0);//设置成0，代表删除此Cookie
                     log.info("return cookieName:{},cookieValue:{}",ck.getName(),ck.getValue());
