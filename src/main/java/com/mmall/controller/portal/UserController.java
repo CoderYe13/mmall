@@ -89,7 +89,6 @@ public class UserController {
         }
         String userJsonStr=RedisPoolUtil.get(loginToken);
         User user=JsonUtil.string2Obj(userJsonStr,User.class);
-        log.info("user:{}",user);
         if (user != null) {
             return ServerResponse.createBySuccess(user);
         }
