@@ -160,10 +160,10 @@ public class ProductManageController {
     }
     @RequestMapping(value = "upload.do" ,method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse upload(@RequestParam(value = "upload_file",required = false) MultipartFile file,HttpServletRequest httpServletRequest, HttpServletRequest request) {
+    public ServerResponse upload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request) {
 
         //User user = (User) session.getAttribute(Const.CURRENT_USER);
-        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        String loginToken=CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             return ServerResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
         }
@@ -191,11 +191,11 @@ public class ProductManageController {
 
     @RequestMapping( value = "richtext_img_upload.do",method = RequestMethod.POST)
     @ResponseBody
-    public Map richtextImgUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest httpServletRequest, HttpServletRequest request, HttpServletResponse response) {
+    public Map richtextImgUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file,  HttpServletRequest request, HttpServletResponse response) {
         System.out.println("开始执行");
         Map resultMap=Maps.newHashMap();
         //User user = (User) session.getAttribute(Const.CURRENT_USER);
-        String loginToken=CookieUtil.readLoginToken(httpServletRequest);
+        String loginToken=CookieUtil.readLoginToken(request);
         if(StringUtils.isEmpty(loginToken)){
             resultMap.put("success",false);
             resultMap.put("msg","请登录管理员");
