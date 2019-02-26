@@ -54,7 +54,7 @@ public class UserController {
         String loginToken=CookieUtil.readLoginToken(httpServletRequest);
         CookieUtil.delLoginToken(httpServletRequest,httpServletResponse);
         RedisShardedPoolUtil.del(loginToken);
-        return ServerResponse.createBySuccess();
+        return ServerResponse.createBySuccess("已注销");
     }
 
     /*
