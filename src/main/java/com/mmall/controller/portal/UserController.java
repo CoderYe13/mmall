@@ -33,7 +33,7 @@ public class UserController {
      */
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody//将返回的序列化对象转化成json
-    public ServerResponse<User> login(String username, String password, HttpSession session,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse) {
         //service->mybatis->dao
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {

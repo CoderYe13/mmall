@@ -17,5 +17,8 @@
     <!--spring 文件的一个分离DataSource-->
     <import resource="applicationContext-datasource.xml"/>
 
+    <!--spring session配置文件-->
+    <import resource="applicationContext-spring-session.xml"/>
+
 
 </beans>
