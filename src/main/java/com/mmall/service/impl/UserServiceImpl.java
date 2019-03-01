@@ -18,7 +18,6 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserMapper userMapper;
-    private User user;
 
     @Override
     public ServerResponse<User> login(String username, String password) {
@@ -104,7 +103,7 @@ public class UserServiceImpl implements IUserService {
             //TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);//使用GuavaCache将token放入cache中
 
             //将GuavaCache迁移到Redis缓存
-            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX+username,forgetToken,60*60*12);//设置有效期为12个小时
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60 * 60 * 12);//设置有效期为12个小时
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题的答案错误");
@@ -122,9 +121,9 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("用户不存在");
         }
         //从cache中获取token
-       // String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);//使用GuavaCache获取token
+        // String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);//使用GuavaCache获取token
 
-        String token=RedisShardedPoolUtil.get(Const.TOKEN_PREFIX+username);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)) {
             return ServerResponse.createByErrorMessage("token无效或者过期");
         }
