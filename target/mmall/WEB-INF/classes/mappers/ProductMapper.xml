@@ -214,4 +214,13 @@
             </foreach>
         </if>
     </select>
+
+    <!--查询库存并加入悲观锁，使用时一定要使用主键，否则就会变成表锁-->
+    <select id="selectStockByProductId" resultType="int" parameterType="java.lang.Integer">
+        select
+        stock
+        from mmall_product
+        where id=#{id}
+        for update
+    </select>
 </mapper>
