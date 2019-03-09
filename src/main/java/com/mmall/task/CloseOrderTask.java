@@ -79,7 +79,7 @@ public class CloseOrderTask {
         RLock lock=redissonManager.getRedisson().getLock(Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK);
         boolean getLock=false;
         try{
-            getLock=lock.tryLock(0,5, TimeUnit.SECONDS);
+            getLock=lock.tryLock(0,5, TimeUnit.SECONDS);//当sql执行较快时，需要将wait_time设置为0，防止集群中的应用同时拿到锁
             if(getLock){
                 log.info("redisson获取到分布式锁：{}，ThreadName:{}",Const.REDIS_LOCK.CLOSE_ORDER_TASK_LOCK,Thread.currentThread().getName());
                 int hour = Integer.parseInt(PropertiesUtil.getProperty("close.order.task.time.hour", "2"));
